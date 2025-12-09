@@ -1,11 +1,245 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Prueba GitHub Pages</title>
-  </head>
-  <body>
-    <h1>Hola Yeimi 💖</h1>
-    <p>Si ves esto, GitHub Pages está funcionando.</p>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Para el Amor de mi Vida</title>
+
+  <!-- Tailwind desde CDN (solo CSS/JS, no requiere build) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            script: ['"Dancing Script"', "cursive"],
+            sans: ['"Nunito"', "sans-serif"],
+          },
+          colors: {
+            love: {
+              50: "#fff0f1",
+              100: "#ffe3e6",
+              200: "#ffc9cf",
+              300: "#ff9ea9",
+              400: "#ff6b7d",
+              500: "#ff334b",
+              600: "#ed1c34",
+            },
+          },
+          animation: {
+            float: "float 6s ease-in-out infinite",
+            "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            wiggle: "wiggle 1s ease-in-out infinite",
+          },
+          keyframes: {
+            float: {
+              "0%, 100%": { transform: "translateY(0)" },
+              "50%": { transform: "translateY(-20px)" },
+            },
+            wiggle: {
+              "0%, 100%": { transform: "rotate(-3deg)" },
+              "50%": { transform: "rotate(3deg)" },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="bg-love-50 font-sans text-gray-800">
+  <!-- Corazones flotando -->
+  <div id="floating-hearts-container"></div>
+
+  <!-- NAV -->
+  <nav class="fixed top-0 w-full bg-white/70 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <span class="font-script text-2xl text-love-600 font-bold">Amor Eterno</span>
+        </div>
+        <button id="music-toggle" class="p-2 rounded-full transition-colors text-gray-400 hover:text-love-500"
+          title="Reproducir música">
+          <span id="music-icon">🔇</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- AUDIO opcional (puedes cambiar el src por una canción tuya) -->
+  <!-- <audio id="bg-music" src="tu-archivo.mp3" loop></audio> -->
+
+  <!-- HERO -->
+  <header
+    class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden bg-gradient-to-b from-love-50 via-white to-love-50">
+    <div class="animate-bounce mb-6">
+      <div class="text-love-500 text-[80px] drop-shadow-2xl"
+        style="filter: drop-shadow(0 10px 10px rgba(255, 51, 75, 0.3));">
+        ❤
+      </div>
+    </div>
+
+    <h1 class="text-5xl md:text-7xl lg:text-8xl font-script text-love-600 mb-6 drop-shadow-sm">
+      Para el Amor de mi Vida
+    </h1>
+
+    <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
+      Este pequeño rincón del internet es solo para ti.
+      Porque te mereces todo el amor del mundo.
+    </p>
+
+    <div class="mt-12 animate-wiggle">
+      <a href="#gallery"
+        class="px-8 py-3 bg-white text-love-600 rounded-full font-bold shadow-md border border-love-100 hover:shadow-xl hover:bg-love-50 transition-all duration-300">
+        Ver nuestra historia ↓
+      </a>
+    </div>
+  </header>
+
+  <main class="space-y-12">
+    <!-- TIEMPO JUNTOS (timer) -->
+    <section id="timer" class="py-12 relative z-10">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="inline-flex items-center gap-2 mb-6 bg-white/60 px-4 py-2 rounded-full shadow-sm text-love-600">
+          <span class="text-lg">⏰</span>
+          <span class="font-semibold text-sm uppercase tracking-wide">Tiempo Juntos</span>
+        </div>
+
+        <h2 class="text-3xl md:text-5xl font-script text-gray-800 mb-10">
+          Cada segundo a tu lado cuenta
+        </h2>
+
+        <!-- Cambia data-start para poner la fecha real de la relación -->
+        <div id="time-together" data-start="2025-10-20T15:00:00" class="flex flex-wrap justify-center gap-4 sm:gap-6">
+
+
+          <div class="time-box">
+            <span id="days-value" class="time-value">00</span>
+            <span class="time-label">Días</span>
+          </div>
+          <div class="time-box">
+            <span id="hours-value" class="time-value">00</span>
+            <span class="time-label">Horas</span>
+          </div>
+          <div class="time-box">
+            <span id="minutes-value" class="time-value">00</span>
+            <span class="time-label">Min</span>
+          </div>
+          <div class="time-box">
+            <span id="seconds-value" class="time-value">00</span>
+            <span class="time-label">Seg</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERÍA -->
+    <section id="gallery" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-script text-love-600 mb-4">Te mi amor, Yeimiii la amo</h2>
+        <div class="flex justify-center items-center gap-2">
+          <div class="h-0.5 w-12 bg-love-300"></div>
+          <span class="text-love-500 text-2xl animate-pulse">❤</span>
+          <div class="h-0.5 w-12 bg-love-300"></div>
+        </div>
+      </div>
+
+      <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        <!-- Las imágenes vienen de tu componente original -->
+        <div class="photo-card">
+          <img src="img/1.png" alt="Nuestro primer viaje juntos" />
+          <div class="photo-overlay">
+            <p>Nuestro primer viaje juntos</p>
+          </div>
+        </div>
+        <div class="photo-card">
+          <img src="img/2.png" alt="Tu sonrisa ilumina mi día" />
+          <div class="photo-overlay">
+            <p>Tu sonrisa ilumina mi día</p>
+          </div>
+        </div>
+        <div class="photo-card">
+          <img src="img/3.png" alt="Momentos inolvidables" />
+          <div class="photo-overlay">
+            <p>Momentos inolvidables</p>
+          </div>
+        </div>
+        <div class="photo-card">
+          <img src="img/4.png" alt="Simplemente tú y yo" />
+          <div class="photo-overlay">
+            <p>Simplemente tú y yo</p>
+          </div>
+        </div>
+        <div class="photo-card">
+          <img src="img/5.png" alt="Amor eterno" />
+          <div class="photo-overlay">
+            <p>Amor eterno</p>
+          </div>
+        </div>
+        <div class="photo-card">
+          <img src="img/6.png" alt="Mi persona favorita" />
+          <div class="photo-overlay">
+            <p>Mi persona favorita</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENSAJE DEL CORAZÓN (antes AI, ahora aleatorio en JS) -->
+    <section id="lovenote" class="py-16 px-4 relative z-10 pb-24">
+      <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-love-100">
+        <div class="bg-love-500 p-6 text-center">
+          <h3 class="text-2xl font-script text-white flex items-center justify-center gap-2">
+            <span class="animate-spin-slow">✨</span>
+            Mensaje del Corazón
+            <span class="animate-spin-slow">✨</span>
+          </h3>
+        </div>
+
+        <div class="p-8 sm:p-12 text-center flex flex-col items-center">
+          <p id="love-note-text"
+            class="text-xl sm:text-2xl text-gray-700 italic font-serif leading-relaxed min-h-[120px] flex items-center justify-center mb-8">
+            "Presiona el botón para descubrir por qué te amo tanto..."
+          </p>
+
+          <button id="love-note-button"
+            class="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white transition-all duration-200 bg-love-500 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-love-500 hover:bg-love-600 hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-love-500/30">
+            <span id="love-button-text">Dime algo lindo</span>
+            <span class="ml-2 group-hover:animate-bounce">💌</span>
+          </button>
+
+          <p id="love-note-error" class="mt-4 text-sm text-love-400 hidden">
+            No pude conectar con las estrellas, pero mi amor sigue aquí.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white py-8 border-t border-love-100 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+      <p class="font-script text-2xl text-love-400">
+        Te amo hoy, mañana y siempre.
+      </p>
+      <div class="mt-4 flex justify-center space-x-2 text-gray-400 text-sm">
+        <span>Hecho con</span>
+        <span class="text-love-500">❤</span>
+        <span>para ti Yeimi mi amor.</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS propio -->
+  <script src="script.js"></script>
+</body>
+
 </html>
