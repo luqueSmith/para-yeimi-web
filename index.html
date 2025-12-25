@@ -1,247 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Para el Amor de mi Vida</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Para mi amada Yeimi - Feliz Navidad</title>
 
-  <!-- Tailwind desde CDN (solo CSS/JS, no requiere build) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap"
-    rel="stylesheet" />
+  <!-- Fonts (como tu proyecto) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Great+Vibes&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            script: ['"Dancing Script"', "cursive"],
-            sans: ['"Nunito"', "sans-serif"],
-          },
-          colors: {
-            love: {
-              50: "#fff0f1",
-              100: "#ffe3e6",
-              200: "#ffc9cf",
-              300: "#ff9ea9",
-              400: "#ff6b7d",
-              500: "#ff334b",
-              600: "#ed1c34",
-            },
-          },
-          animation: {
-            float: "float 6s ease-in-out infinite",
-            "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-            wiggle: "wiggle 1s ease-in-out infinite",
-          },
-          keyframes: {
-            float: {
-              "0%, 100%": { transform: "translateY(0)" },
-              "50%": { transform: "translateY(-20px)" },
-            },
-            wiggle: {
-              "0%, 100%": { transform: "rotate(-3deg)" },
-              "50%": { transform: "rotate(3deg)" },
-            },
-          },
-        },
-      },
-    };
-  </script>
-
-  <!-- Estilos propios -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 
-<body class="bg-love-50 font-sans text-gray-800">
-  <!-- Corazones flotando -->
-  <div id="floating-hearts-container"></div>
+<body>
+  <!-- FX -->
+  <div id="snowfall" aria-hidden="true"></div>
+  <div id="twinkle-lights" aria-hidden="true"></div>
 
-  <!-- NAV -->
-  <nav class="fixed top-0 w-full bg-white/70 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center">
-          <span class="font-script text-2xl text-love-600 font-bold">Amor Eterno</span>
+  <main class="page">
+    <!-- HERO -->
+    <section class="hero" id="top">
+      <div class="hero-bg" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1543589077-47d816067fbf?q=80&w=2070&auto=format&fit=crop"
+          alt=""
+        />
+        <div class="hero-overlay"></div>
+      </div>
+
+      <div class="hero-inner">
+        <div class="hero-badge">
+          <div class="badge-circle" aria-hidden="true">🎄</div>
         </div>
-        <button id="music-toggle" class="p-2 rounded-full transition-colors text-gray-400 hover:text-love-500"
-          title="Reproducir música">
-          <span id="music-icon">🔇</span>
-        </button>
+
+        <h1 class="hero-title gold-text-glow">Yeimi, Mi Amor</h1>
+
+        <p class="hero-subtitle">
+          "La luz más brillante de mi Navidad eres tú"
+        </p>
+
+        <div class="timer-grid" role="group" aria-label="Cuenta regresiva">
+          <div class="timer-card">
+            <span class="timer-value" id="days">0</span>
+            <span class="timer-label">Días</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-value" id="hours">0</span>
+            <span class="timer-label">Hrs</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-value" id="minutes">0</span>
+            <span class="timer-label">Min</span>
+          </div>
+          <div class="timer-card">
+            <span class="timer-value" id="seconds">0</span>
+            <span class="timer-label">Seg</span>
+          </div>
+        </div>
+
+        <div class="phrase-wrap">
+          <p class="phrase gold-text-glow" id="phrase"></p>
+        </div>
       </div>
-    </div>
-  </nav>
 
- <!-- AUDIO opcional (puedes cambiar el src por una canción tuya) -->
- <audio id="bg-music" src="cancion.mp3" loop></audio>
-
-  <!-- <audio id="bg-music" src="tu-archivo.mp3" loop></audio> -->
-
-  <!-- HERO -->
-  <header
-    class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 flex flex-col items-center justify-center text-center px-4 z-10 overflow-hidden bg-gradient-to-b from-love-50 via-white to-love-50">
-    <div class="animate-bounce mb-6">
-      <div class="text-love-500 text-[80px] drop-shadow-2xl"
-        style="filter: drop-shadow(0 10px 10px rgba(255, 51, 75, 0.3));">
-        ❤
-      </div>
-    </div>
-
-    <h1 class="text-5xl md:text-7xl lg:text-8xl font-script text-love-600 mb-6 drop-shadow-sm">
-      Para el Amor de mi Vida
-    </h1>
-
-    <p class="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto font-light leading-relaxed">
-      Este pequeño rincón del internet es solo para ti.
-      Porque te mereces todo el amor del mundo.
-    </p>
-
-    <div class="mt-12 animate-wiggle">
-      <a href="#gallery"
-        class="px-8 py-3 bg-white text-love-600 rounded-full font-bold shadow-md border border-love-100 hover:shadow-xl hover:bg-love-50 transition-all duration-300">
-        Ver nuestra historia ↓
+      <a class="scroll-hint" href="#letters" aria-label="Desliza hacia abajo">
+        <span class="scroll-hint-text">DESLIZA HACIA ABAJO</span>
+        <span class="scroll-hint-arrow">↓</span>
       </a>
-    </div>
-  </header>
-
-  <main class="space-y-12">
-    <!-- TIEMPO JUNTOS (timer) -->
-    <section id="timer" class="py-12 relative z-10">
-      <div class="max-w-4xl mx-auto px-4 text-center">
-        <div class="inline-flex items-center gap-2 mb-6 bg-white/60 px-4 py-2 rounded-full shadow-sm text-love-600">
-          <span class="text-lg">⏰</span>
-          <span class="font-semibold text-sm uppercase tracking-wide">Tiempo Juntos</span>
-        </div>
-
-        <h2 class="text-3xl md:text-5xl font-script text-gray-800 mb-10">
-          Cada segundo a tu lado cuenta
-        </h2>
-
-        <!-- Cambia data-start para poner la fecha real de la relación -->
-        <div id="time-together" data-start="2025-10-20T15:00:00" class="flex flex-wrap justify-center gap-4 sm:gap-6">
-
-
-          <div class="time-box">
-            <span id="days-value" class="time-value">00</span>
-            <span class="time-label">Días</span>
-          </div>
-          <div class="time-box">
-            <span id="hours-value" class="time-value">00</span>
-            <span class="time-label">Horas</span>
-          </div>
-          <div class="time-box">
-            <span id="minutes-value" class="time-value">00</span>
-            <span class="time-label">Min</span>
-          </div>
-          <div class="time-box">
-            <span id="seconds-value" class="time-value">00</span>
-            <span class="time-label">Seg</span>
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- GALERÍA -->
-    <section id="gallery" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-script text-love-600 mb-4">Te mi amor, Yeimiii la amo</h2>
-        <div class="flex justify-center items-center gap-2">
-          <div class="h-0.5 w-12 bg-love-300"></div>
-          <span class="text-love-500 text-2xl animate-pulse">❤</span>
-          <div class="h-0.5 w-12 bg-love-300"></div>
-        </div>
-      </div>
+    <!-- CARTAS -->
+    <section class="section container" id="letters">
+      <header class="section-header">
+        <h2 class="section-title red">Cartas para Ti</h2>
+        <div class="section-line"></div>
+        <p class="section-subtitle">Te amo,De Smith para Yeimi</p>
+      </header>
 
-      <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-        <!-- Las imágenes vienen de tu componente original -->
-        <div class="photo-card">
-          <img src="img/1.png" alt="Nuestro primer viaje juntos" />
-          <div class="photo-overlay">
-            <p>Eres super Linda Yeimi</p>
-          </div>
-        </div>
-        <div class="photo-card">
-          <img src="img/2.png" alt="Tu sonrisa ilumina mi día" />
-          <div class="photo-overlay">
-            <p>Tu sonrisa ilumina mi día</p>
-          </div>
-        </div>
-        <div class="photo-card">
-          <img src="img/3.png" alt="Momentos inolvidables" />
-          <div class="photo-overlay">
-            <p>Eres un Momento inolvidables</p>
-          </div>
-        </div>
-        <div class="photo-card">
-          <img src="img/4.png" alt="Simplemente tú y yo" />
-          <div class="photo-overlay">
-            <p>Simplemente tú, hermosa</p>
-          </div>
-        </div>
-        <div class="photo-card">
-          <img src="img/5.png" alt="Amor eterno" />
-          <div class="photo-overlay">
-            <p>Amor eterno</p>
-          </div>
-        </div>
-        <div class="photo-card">
-          <img src="img/6.png" alt="Mi persona favorita" />
-          <div class="photo-overlay">
-            <p>Mi persona favorita</p>
-          </div>
-        </div>
-      </div>
+      <div class="letters-grid" id="lettersGrid"></div>
     </section>
 
-    <!-- MENSAJE DEL CORAZÓN (antes AI, ahora aleatorio en JS) -->
-    <section id="lovenote" class="py-16 px-4 relative z-10 pb-24">
-      <div class="max-w-2xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-love-100">
-        <div class="bg-love-500 p-6 text-center">
-          <h3 class="text-2xl font-script text-white flex items-center justify-center gap-2">
-            <span class="animate-spin-slow">✨</span>
-            Mensaje del Corazón
-            <span class="animate-spin-slow">✨</span>
-          </h3>
-        </div>
+    <!-- POEMAS -->
+    <section class="section container" id="poems">
+      <div class="poem-shell">
+        <div class="poem-card">
+          <h2 class="poem-title">Inspiración para Yeimi</h2>
+          <p class="poem-subtitle">"Escribe un tema y deja que las estrellas hablen"</p>
 
-        <div class="p-8 sm:p-12 text-center flex flex-col items-center">
-          <p id="love-note-text"
-            class="text-xl sm:text-2xl text-gray-700 italic font-serif leading-relaxed min-h-[120px] flex items-center justify-center mb-8">
-            "Presiona el botón para descubrir por qué te amo tanto..."
-          </p>
+          <div class="poem-controls">
+            <input id="themeInput" type="text" placeholder="Ej: Tus ojos, Nuestra primera cita..." />
+            <button id="generatePoemBtn">Crear Poema ✨</button>
+          </div>
 
-          <button id="love-note-button"
-            class="group relative inline-flex items-center justify-center px-8 py-3 text-lg font-bold text-white transition-all duration-200 bg-love-500 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-love-500 hover:bg-love-600 hover:scale-105 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed shadow-lg hover:shadow-love-500/30">
-            <span id="love-button-text">Dime algo lindo</span>
-            <span class="ml-2 group-hover:animate-bounce">💌</span>
-          </button>
+          <div class="poem-result hidden" id="poemResult">
+            <p class="poem-text" id="poemText"></p>
+            <div class="poem-foot">
+              <span class="poem-chip" id="poemInspiration"></span>
+            </div>
+          </div>
 
-          <p id="love-note-error" class="mt-4 text-sm text-love-400 hidden">
-            No pude conectar con las estrellas, pero mi amor sigue aquí.
+          <p class="poem-note">
+            Nota: Solo escribes cualquier palabra y te dara un peoma referente
+            a lo que escribiste amor, Te ammo Yeimi ❤.
           </p>
         </div>
       </div>
     </section>
+
+    <!-- MEMORIAS -->
+    <section class="section container" id="memories">
+      <header class="section-header">
+        <h2 class="section-title green">La mas Linda ❤</h2>
+        <p class="section-subtitle greenish">Momentos que guardo en el corazón</p>
+      </header>
+
+      <div class="memories-grid" id="memoriesGrid"></div>
+    </section>
+
+    <!-- REGALO -->
+    <section class="section container gift-section" id="gift">
+      <header class="section-header">
+        <span class="overline">PARA YEIMI</span>
+        <h2 class="section-title gold">Tu Sorpresa Especial</h2>
+      </header>
+
+      <div class="gift-wrap">
+        <div class="gift-warning hidden" id="giftWarning">
+          <div class="gift-warning-inner">
+            <span class="gift-warning-icon">⏳</span>
+            <div>
+              <p class="gift-warning-title">¡Aún no, mi reina Yeimi! 🌹</p>
+              <p class="gift-warning-sub" id="giftWarningSub"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Locked -->
+        <div class="gift-locked" id="giftLocked" role="button" tabindex="0" aria-label="Regalo para Yeimi">
+          <div class="gift-box">
+            <div class="gift-ribbon-v"></div>
+            <div class="gift-ribbon-h"></div>
+            <div class="gift-bow">🎁</div>
+
+            <div class="gift-center">
+              <span class="gift-to gold-text-glow">Para: Yeimi</span>
+              <p class="gift-tag">SECRETOS DE AMOR</p>
+              <div class="gift-lock" id="giftLockBadge">
+                <span>BLOQUEADO</span>
+              </div>
+            </div>
+          </div>
+          <div class="gift-glow" aria-hidden="true"></div>
+        </div>
+
+        <!-- Unlocked -->
+        <div class="gift-unlocked hidden" id="giftUnlocked">
+          <div class="gift-card">
+            <div class="gift-card-inner">
+              <div class="gift-head">
+                <h2 class="gift-big">Mi Regalo Eres Tú</h2>
+                <div class="gift-divider"></div>
+              </div>
+
+              <div class="gift-verses">
+                <p>
+                  "Yeimi, bajo este cielo de invierno y luces de colores,<br>
+                  descubrí que mi mayor fortuna son tus amores."
+                </p>
+                <p>
+                  "Eres mi paz, mi locura y mi razón de ser,<br>
+                  el mejor regalo que la vida me pudo ofrecer."
+                </p>
+              </div>
+
+              <div class="gift-action">
+                <button class="gift-accept" id="acceptLoveBtn">
+                  <span>ACEPTAR MI AMOR</span>
+                  <span class="gift-ring">💍</span>
+                </button>
+                <p class="gift-footnote">Promesa de Navidad para Yeimi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-line" aria-hidden="true"></div>
+
+      <div class="footer-inner">
+        <div class="footer-heart" aria-hidden="true">❤️</div>
+        <h2 class="footer-title">Te Amo Eternamente, Yeimi</h2>
+        <p class="footer-text">
+          "Gracias por ser mi hogar. Que esta Navidad sea el inicio de un año mágico juntos."
+        </p>
+
+        <div class="footer-meta">
+          <div class="footer-meta-row">
+            <span class="footer-meta-line"></span>
+            <span class="footer-year">2024</span>
+            <span class="footer-meta-line"></span>
+          </div>
+          <p class="footer-sign">PARA YEIMI, MI TODO</p>
+        </div>
+      </div>
+    </footer>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="bg-white py-8 border-t border-love-100 relative z-10">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <p class="font-script text-2xl text-love-400">
-        Te amo hoy, mañana y siempre.
-      </p>
-      <div class="mt-4 flex justify-center space-x-2 text-gray-400 text-sm">
-        <span>Hecho con</span>
-        <span class="text-love-500">❤</span>
-        <span>para ti Yeimi mi amor.</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- JS propio -->
-  <script src="script.js"></script>
+  <script src="./app.js" defer></script>
 </body>
-
 </html>

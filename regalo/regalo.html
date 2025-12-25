@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Un Regalo para Yeimi</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --night:#020617;
+      --night2:#0b1222;
+      --snow:#f8fafc;
+      --romantic:#ef4444;
+      --yeimi:#f9a8d4;
+      --glow:#fde047;
+      --warm:#fbbf24;
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.10);
+      --border: rgba(255,255,255,.16);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      overflow:hidden;
+      background: var(--night);
+      color:#fff;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select:none;
+      touch-action: manipulation;
+    }
+    .font-romantic{font-family:'Dancing Script', cursive;}
+
+    /* Background */
+    .bg{
+      position:fixed; inset:0;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(15,23,42,1) 0%, rgba(2,6,23,1) 60%, rgba(2,6,23,1) 100%);
+      opacity:.9;
+      z-index:1;
+    }
+    canvas#snow{
+      position:fixed; inset:0;
+      z-index:2;
+      pointer-events:none;
+    }
+
+    /* UI */
+    .ui{
+      position:fixed;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      z-index:50;
+      display:flex;
+      gap:10px;
+    }
+    .icon-btn{
+      width:44px; height:44px;
+      display:grid; place-items:center;
+      border-radius:999px;
+      background: var(--glass);
+      border:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color:#fff;
+      cursor:pointer;
+      transition: transform .12s ease, background .2s ease;
+    }
+    .icon-btn:active{ transform: scale(.96); }
+    .icon-btn:hover{ background: var(--glass2); }
+
+    /* Scene container */
+    .stage{
+      position:relative;
+      z-index:10;
+      height:100vh;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+    }
+    .scene{
+      width:min(980px, 100%);
+      min-height: min(640px, 100vh);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+    }
+    .scene.active{ display:flex; }
+
+    /* Buttons */
+    .btn{
+      border:1px solid var(--border);
+      background: var(--glass);
+      color:#fff;
+      padding: 14px 18px;
+      border-radius:999px;
+      letter-spacing:.25em;
+      font-weight:300;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      transition: transform .12s ease, background .2s ease, letter-spacing .2s ease;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .btn:hover{ background: var(--glass2); letter-spacing:.30em; }
+    .btn:active{ transform: scale(.98); }
+    .btn.primary{
+      background: rgba(239,68,68,.92);
+      border-color: rgba(239,68,68,.8);
+      box-shadow: 0 10px 30px rgba(239,68,68,.25);
+      letter-spacing:.18em;
+      font-weight:600;
+    }
+    .btn.primary:hover{ filter:brightness(1.03); }
+    .btn.ghost{
+      background:transparent;
+      border-color:transparent;
+      color:rgba(255,255,255,.55);
+      letter-spacing:.45em;
+      font-size:10px;
+      padding:10px 12px;
+    }
+    .btn.ghost:hover{ color:#fff; background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.10); }
+
+    /* Progress bar */
+    .progress{
+      position:fixed;
+      left:0; right:0;
+      bottom:0;
+      height: 8px;
+      background: rgba(255,255,255,.06);
+      z-index:60;
+    }
+    .progress > div{
+      height:100%;
+      width:0%;
+      background: var(--romantic);
+      box-shadow: 0 0 18px rgba(239,68,68,.75);
+      transition: width .35s ease;
+    }
+
+    /* Generic animations */
+    .fade-in{ animation: fadeIn .5s ease both; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    .pulse{ animation: pulse 2.2s ease-in-out infinite; }
+    @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+
+    .bounce{ animation: bounce 1.3s ease-in-out infinite; }
+    @keyframes bounce{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+    .float{ animation: float 2.5s ease-in-out infinite; }
+    @keyframes float{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+    /* Layout pieces */
+    .stack{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; }
+    .row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      gap: clamp(12px, 4vw, 36px);
+      width:100%;
+    }
+    .row.wide{
+      justify-content:space-between;
+      padding: 0 clamp(6px, 4vw, 28px);
+      align-items:flex-end;
+    }
+
+    .hint{
+      color: rgba(255,255,255,.35);
+      font-size: 12px;
+      max-width: 320px;
+      line-height:1.6;
+      font-style: italic;
+      font-weight:300;
+    }
+
+    /* Icons (inline) */
+    .icon{
+      width:22px;height:22px;display:inline-block;
+      fill: currentColor;
+    }
+    .icon.sm{ width:18px; height:18px; }
+    .icon.lg{ width:64px; height:64px; }
+
+    /* Characters */
+    .char{
+      width: 92px;
+      height: 190px;
+      position:relative;
+      filter: drop-shadow(0 0 16px rgba(255,255,255,.14));
+    }
+    @media (min-width: 768px){
+      .char{ width: 120px; height: 250px; }
+    }
+    .boy.walking{ animation: walk 0.6s ease-in-out infinite; }
+    @keyframes walk{
+      0%,100%{ transform: translateY(0) rotate(0deg) }
+      50%{ transform: translateY(-8px) rotate(-2deg) }
+    }
+    .boy.idle{ animation: idle 2s ease-in-out infinite; }
+    .girl.idle{ animation: idleGirl 2.5s ease-in-out infinite; }
+    @keyframes idle{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+    @keyframes idleGirl{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+    .name-pill{
+      position:absolute;
+      top:-44px;
+      left:50%;
+      transform:translateX(-50%);
+      padding:6px 14px;
+      border-radius:999px;
+      background: rgba(249,168,212,.16);
+      border: 1px solid rgba(249,168,212,.28);
+      color:#fff;
+      font-size:10px;
+      letter-spacing:.22em;
+      font-weight:700;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 10px 22px rgba(244,114,182,.12);
+      animation: popIn .6s 1s ease both;
+    }
+    @keyframes popIn{ from{transform:translateX(-50%) scale(.6); opacity:0} to{transform:translateX(-50%) scale(1); opacity:1} }
+
+    /* Sparkles */
+    .sparkles{
+      position:absolute;
+      right:-28px;
+      top:10px;
+      color: var(--glow);
+      filter: drop-shadow(0 0 18px rgba(253,224,71,.25));
+      animation: twinkle 1.3s ease-in-out infinite;
+    }
+    @keyframes twinkle{ 0%,100%{transform:scale(1); opacity:.8} 50%{transform:scale(1.25); opacity:1} }
+
+    /* Flower glow */
+    .flower-wrap{ position:absolute; top:-82px; left:50%; transform:translateX(-50%); }
+    .flower{
+      width:120px; height:120px;
+      position:relative;
+    }
+    .flower::before{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(253,224,71,.55);
+      filter: blur(26px);
+      border-radius:999px;
+      animation: glow 2.5s ease-in-out infinite;
+      opacity:.55;
+    }
+    @keyframes glow{ 0%,100%{transform:scale(1); opacity:.35} 50%{transform:scale(1.25); opacity:.75} }
+    .flower svg{ position:relative; z-index:1; width:100%; height:100%; }
+    .flower .petal{ transform-origin:50% 50%; animation: spin 15s linear infinite; }
+    @keyframes spin{ to{ transform: rotate(360deg);} }
+
+    /* Heart */
+    .heart-wrap{
+      position:relative;
+      width: 120px; height: 120px;
+      display:grid; place-items:center;
+    }
+    .heart-wrap::before{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(239,68,68,.60);
+      filter: blur(30px);
+      border-radius:999px;
+      opacity:.40;
+      animation: heartGlow 1.5s ease-in-out infinite;
+    }
+    @keyframes heartGlow{ 0%,100%{transform:scale(1); opacity:.25} 50%{transform:scale(1.2); opacity:.55} }
+    .heart-svg{
+      width:100%; height:100%;
+      filter: drop-shadow(0 0 18px rgba(239,68,68,.7));
+      animation: heartBeat 1.5s ease-in-out infinite;
+    }
+    @keyframes heartBeat{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+
+    /* Burst hearts */
+    .burst{
+      position:absolute;
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      pointer-events:none;
+    }
+    .burst .mini-heart{
+      position:absolute;
+      width:18px; height:18px;
+      color: rgba(248,113,113,1);
+      filter: drop-shadow(0 0 10px rgba(248,113,113,.35));
+      opacity:0;
+    }
+
+    /* Chest */
+    .chest{
+      width: 190px;
+      height: 132px;
+      border-radius: 22px 22px 16px 16px;
+      background: linear-gradient(135deg, #92400e, #451a03);
+      border-bottom: 10px solid #2b0f02;
+      box-shadow: 0 18px 40px rgba(0,0,0,.45);
+      position:relative;
+      cursor:pointer;
+      transform: translateZ(0);
+    }
+    .chest:hover{ filter: brightness(1.03); }
+    .chest:active{ transform: scale(.98); }
+    .chest .bar{
+      position:absolute; left:16px; right:16px; top:18px; height:4px;
+      background: rgba(250,204,21,.22);
+      border-radius:999px;
+    }
+    .chest .lock{
+      width:44px;height:44px;
+      background:#eab308;
+      border:5px solid #4c1d0b;
+      border-radius:999px;
+      position:absolute;
+      left:50%; top:50%;
+      transform: translate(-50%,-50%);
+      box-shadow: inset 0 4px 10px rgba(0,0,0,.35);
+      z-index:2;
+    }
+    .chest .shine{
+      position:absolute; inset:0;
+      background: rgba(250,204,21,.14);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    @keyframes shimmer{ 0%,100%{opacity:.08} 50%{opacity:.32} }
+
+    .final-title{
+      font-size: clamp(44px, 9vw, 96px);
+      line-height:1;
+      margin: 20px 0 10px;
+      filter: drop-shadow(0 0 22px rgba(255,255,255,.28));
+    }
+
+    /* Safe-area padding for mobile bottom */
+    .pad-bottom{
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <canvas id="snow"></canvas>
+
+  <div class="ui">
+    <button id="audioBtn" class="icon-btn" aria-label="Música">
+      <!-- volume icon -->
+      <svg id="audioIcon" class="icon sm" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M11 5 6 9H3v6h3l5 4V5zm7.5 7a4.5 4.5 0 0 0-2.25-3.89v7.78A4.5 4.5 0 0 0 18.5 12zm0-9a1 1 0 0 0-1 1c0 .35.18.67.46.85A8.5 8.5 0 0 1 21 12a8.5 8.5 0 0 1-3.04 6.15 1 1 0 1 0 1.28 1.54A10.5 10.5 0 0 0 23 12 10.5 10.5 0 0 0 19.24 4.31.99.99 0 0 0 18.5 3z"/>
+      </svg>
+    </button>
+  </div>
+
+  <main class="stage pad-bottom">
+
+    <!-- SCENE 0: INTRO -->
+    <section class="scene active fade-in" data-scene="0">
+      <div class="stack">
+        <div class="pulse" style="display:flex; justify-content:center;">
+          <div style="position:relative; width:84px; height:84px;">
+            <div style="position:absolute; inset:0; background: rgba(239,68,68,.22); filter: blur(18px); border-radius:999px;"></div>
+            <svg class="icon lg" viewBox="0 0 24 24" style="position:relative; z-index:1; color: var(--romantic);">
+              <path d="M12 21s-7-4.35-9.5-8.5C.4 9.2 2 6 5.6 5.3 8 4.8 10 6.3 12 8.4c2-2.1 4-3.6 6.4-3.1C22 6 23.6 9.2 21.5 12.5 19 16.65 12 21 12 21z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+
+        <button class="btn" id="startBtn">
+          COMENZAR
+          <svg class="icon sm" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 1: WALKING -->
+    <section class="scene fade-in" data-scene="1">
+      <div class="stack" style="width:100%; height:100%; justify-content:flex-end; padding-bottom: 110px;">
+        <div id="walkLane" style="width:100%; position:relative; height:240px;">
+          <div id="boyWalk" class="char boy walking" style="position:absolute; left:-160px; bottom:0;">
+            <!-- Boy SVG -->
+            <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+              <!-- scarf -->
+              <path id="scarf" d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+              <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+              <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+              <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+              <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE 2: FINDING MAGIC -->
+    <section class="scene fade-in" data-scene="2">
+      <div class="stack">
+        <div style="position:relative; display:inline-block;">
+          <div class="char boy idle">
+            <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+              <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+              <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+              <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+              <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+              <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            </svg>
+          </div>
+
+          <div class="sparkles" aria-hidden="true">
+            <svg class="icon" viewBox="0 0 24 24">
+              <path d="M12 2l1.6 5.2L19 9l-5.4 1.8L12 16l-1.6-5.2L5 9l5.4-1.8L12 2zM5 14l.9 2.8L9 18l-3.1 1.1L5 22l-.9-2.9L1 18l3.1-1.2L5 14z" fill="currentColor"/>
+            </svg>
+          </div>
+        </div>
+
+        <button class="btn ghost" data-next>¿Qué es eso?</button>
+      </div>
+    </section>
+
+    <!-- SCENE 3: PREPARING FLOWER -->
+    <section class="scene fade-in" data-scene="3">
+      <div class="stack">
+        <div style="position:relative; display:inline-block;">
+          <div class="char boy idle">
+            <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+              <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+              <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+              <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+              <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+              <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            </svg>
+          </div>
+
+          <div class="flower-wrap" aria-hidden="true">
+            <div class="flower">
+              <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path class="petal" d="M50 50 C70 10 90 50 50 90 C10 50 30 10 50 50" fill="#fde047"></path>
+                <circle cx="50" cy="50" r="12" fill="#fbbf24"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn" data-next style="border-color: rgba(253,224,71,.22); color: #fef9c3;">
+          ES PARA ELLA
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 4: HER WAITING -->
+    <section class="scene fade-in" data-scene="4">
+      <div class="stack">
+        <div class="char girl idle" style="filter: drop-shadow(0 0 20px rgba(244,114,182,.35));">
+          <div class="name-pill" id="namePill">YEIMI</div>
+          <!-- Girl SVG -->
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 45 Q15 5 85 5 Q85 45 85 90 L15 90 Z" fill="#0f172a"></path>
+            <path d="M25 75 L75 75 L85 155 Q50 165 15 155 Z" fill="#f472b6"></path>
+            <circle cx="50" cy="45" r="28" fill="#475569"></circle>
+            <rect x="15" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="75" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="38" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+            <rect x="52" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+          </svg>
+        </div>
+
+        <div class="hint">Ella está esperando bajo las estrellas...</div>
+
+        <button class="icon-btn bounce" data-next aria-label="Siguiente" style="width:54px;height:54px;">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 5: THE APPROACH -->
+    <section class="scene fade-in" data-scene="5">
+      <div class="row wide" style="width:100%; height:100%; padding-bottom: 110px;">
+        <div class="char boy walking" id="boyApproach">
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+            <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+            <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+            <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+            <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+          </svg>
+        </div>
+
+        <div class="char girl idle" style="filter: drop-shadow(0 0 20px rgba(244,114,182,.35)); opacity:0; animation: fadeIn .6s 1.6s ease both;">
+          <div class="name-pill" id="namePill2">YEIMI</div>
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 45 Q15 5 85 5 Q85 45 85 90 L15 90 Z" fill="#0f172a"></path>
+            <path d="M25 75 L75 75 L85 155 Q50 165 15 155 Z" fill="#f472b6"></path>
+            <circle cx="50" cy="45" r="28" fill="#475569"></circle>
+            <rect x="15" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="75" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="38" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+            <rect x="52" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+          </svg>
+        </div>
+
+        <button class="btn ghost" data-next style="position:absolute; left:50%; bottom:60px; transform:translateX(-50%); text-decoration: underline; text-underline-offset: 10px; opacity:0; animation: fadeIn .6s 2.4s ease both;">
+          Llegar a ella
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 6: ENCOUNTER -->
+    <section class="scene fade-in" data-scene="6">
+      <div class="row" style="height:100%; padding-bottom: 110px;">
+        <div class="char boy idle">
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+            <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+            <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+            <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+            <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+          </svg>
+        </div>
+
+        <div class="char girl idle" style="filter: drop-shadow(0 0 20px rgba(244,114,182,.35));">
+          <div class="name-pill" id="namePill3">YEIMI</div>
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 45 Q15 5 85 5 Q85 45 85 90 L15 90 Z" fill="#0f172a"></path>
+            <path d="M25 75 L75 75 L85 155 Q50 165 15 155 Z" fill="#f472b6"></path>
+            <circle cx="50" cy="45" r="28" fill="#475569"></circle>
+            <!-- blush -->
+            <circle cx="35" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+            <circle cx="65" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+
+            <!-- arms up a bit -->
+            <rect x="15" y="80" width="10" height="40" rx="5" fill="#475569" transform="rotate(-25 20 85)"></rect>
+            <rect x="75" y="80" width="10" height="40" rx="5" fill="#475569" transform="rotate(25 80 85)"></rect>
+
+            <rect x="38" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+            <rect x="52" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+          </svg>
+        </div>
+
+        <button class="btn" data-next style="position:absolute; left:50%; bottom:60px; transform:translateX(-50%); background:#fff; color:#0f172a; border-color:rgba(255,255,255,.2); font-weight:700; letter-spacing:.06em;">
+          Hola...
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 7: THE GIFT -->
+    <section class="scene fade-in" data-scene="7">
+      <div class="row" style="height:100%; padding-bottom: 110px; position:relative;">
+        <div class="char boy idle">
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+            <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+            <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+            <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+            <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+          </svg>
+        </div>
+
+        <!-- flower flying -->
+        <div class="flower" id="flyFlower" style="position:absolute; left:50%; top:40%; transform: translate(-70px,-50px) scale(.4); opacity:.2;">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path class="petal" d="M50 50 C70 10 90 50 50 90 C10 50 30 10 50 50" fill="#fde047"></path>
+            <circle cx="50" cy="50" r="12" fill="#fbbf24"></circle>
+          </svg>
+        </div>
+
+        <div class="char girl idle" style="filter: drop-shadow(0 0 20px rgba(244,114,182,.35));">
+          <div class="name-pill" id="namePill4">YEIMI</div>
+          <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 45 Q15 5 85 5 Q85 45 85 90 L15 90 Z" fill="#0f172a"></path>
+            <path d="M25 75 L75 75 L85 155 Q50 165 15 155 Z" fill="#f472b6"></path>
+            <circle cx="50" cy="45" r="28" fill="#475569"></circle>
+            <!-- blush -->
+            <circle cx="35" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+            <circle cx="65" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+            <rect x="15" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="75" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+            <rect x="38" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+            <rect x="52" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+          </svg>
+        </div>
+
+        <button class="btn ghost" data-next style="position:absolute; left:50%; bottom:60px; transform:translateX(-50%); color: rgba(244,114,182,.95); font-weight:800; letter-spacing:.25em;">
+          ES HERMOSA
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 8: CONNECTION -->
+    <section class="scene fade-in" data-scene="8">
+      <div class="stack">
+        <div class="row" style="position:relative; align-items:flex-end;">
+          <div class="char boy idle">
+            <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <rect x="30" y="70" width="40" height="85" rx="20" fill="#1e293b"></rect>
+              <path d="M30 75 Q50 85 70 75 L75 100 Q50 110 25 100 Z" fill="#ef4444"></path>
+              <circle cx="50" cy="45" r="28" fill="#334155"></circle>
+              <path d="M22 40 Q50 10 78 40" stroke="#ef4444" stroke-width="8" fill="none"></path>
+              <rect x="35" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+              <rect x="53" y="150" width="12" height="40" rx="6" fill="#1e293b"></rect>
+            </svg>
+          </div>
+
+          <div style="position:absolute; left:50%; transform:translateX(-50%); top:-40px;">
+            <div class="heart-wrap" style="width:92px; height:92px;">
+              <svg class="heart-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 160 C100 160 30 110 30 65 C30 40 50 25 70 25 C85 25 95 35 100 45 C105 35 115 25 130 25 C150 25 170 40 170 65 C170 110 100 160 100 160 Z" fill="#ef4444"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="char girl idle" style="filter: drop-shadow(0 0 20px rgba(244,114,182,.35));">
+            <div class="name-pill" id="namePill5">YEIMI</div>
+            <svg viewBox="0 0 100 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 45 Q15 5 85 5 Q85 45 85 90 L15 90 Z" fill="#0f172a"></path>
+              <path d="M25 75 L75 75 L85 155 Q50 165 15 155 Z" fill="#f472b6"></path>
+              <circle cx="50" cy="45" r="28" fill="#475569"></circle>
+              <!-- blush -->
+              <circle cx="35" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+              <circle cx="65" cy="55" r="5" fill="#f43f5e" opacity=".55"></circle>
+              <rect x="15" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+              <rect x="75" y="80" width="10" height="40" rx="5" fill="#475569"></rect>
+              <rect x="38" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+              <rect x="52" y="155" width="10" height="35" rx="5" fill="#334155"></rect>
+            </svg>
+          </div>
+        </div>
+
+        <button class="btn primary" data-next style="padding: 14px 22px;">
+          CERRAR LOS OJOS
+        </button>
+      </div>
+    </section>
+
+    <!-- SCENE 9: MAGIC BURST -->
+    <section class="scene fade-in" data-scene="9">
+      <div class="stack" style="position:relative;">
+        <div class="heart-wrap" style="width:240px; height:240px;">
+          <svg class="heart-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+            <path d="M100 160 C100 160 30 110 30 65 C30 40 50 25 70 25 C85 25 95 35 100 45 C105 35 115 25 130 25 C150 25 170 40 170 65 C170 110 100 160 100 160 Z" fill="#ef4444"/>
+          </svg>
+        </div>
+        <div class="burst" id="burst"></div>
+      </div>
+    </section>
+
+    <!-- SCENE 10: FINAL -->
+    <section class="scene fade-in" data-scene="10">
+      <div class="stack">
+        <div id="chest" class="chest" role="button" aria-label="Abrir cofre">
+          <div class="bar"></div>
+          <div class="lock"></div>
+          <div class="shine"></div>
+        </div>
+
+        <div id="finalContent" style="display:none;">
+          <h1 class="font-romantic final-title" id="finalTitle">Para Yeimi, con amor.</h1>
+          <div style="display:flex; justify-content:center; margin: 10px 0 18px;">
+            <div class="heart-wrap" style="width:120px; height:120px;">
+              <svg class="heart-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 160 C100 160 30 110 30 65 C30 40 50 25 70 25 C85 25 95 35 100 45 C105 35 115 25 130 25 C150 25 170 40 170 65 C170 110 100 160 100 160 Z" fill="#ef4444"/>
+              </svg>
+            </div>
+          </div>
+
+          <button class="btn ghost" id="restartBtn">REINICIAR SUEÑO</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="progress" aria-hidden="true"><div id="progressFill"></div></div>
+
+  <audio id="bgm" loop preload="auto"></audio>
+
+  <script>
+    // ====== CONFIG (puedes cambiar esto) ======
+    const CONFIG = {
+      NAME: "Yeimi",
+      FINAL_MESSAGE: "Para Yeimi, con amor.",
+      MUSIC_URL: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+    };
+
+    // ====== Helpers ======
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
+    const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
+
+    // ====== Scene state ======
+    const scenes = $$("section.scene");
+    const totalScenes = scenes.length - 1; // last index
+    let scene = 0;
+    let timers = [];
+
+    function clearTimers(){
+      timers.forEach(t => clearTimeout(t));
+      timers = [];
+    }
+
+    function setScene(index){
+      clearTimers();
+      scene = clamp(index, 0, totalScenes);
+
+      scenes.forEach(s => s.classList.remove("active"));
+      const active = scenes.find(s => Number(s.dataset.scene) === scene);
+      if(active){
+        active.classList.add("active");
+        // re-trigger fade-in
+        active.classList.remove("fade-in");
+        void active.offsetWidth;
+        active.classList.add("fade-in");
+      }
+
+      // progress
+      const pct = (scene / totalScenes) * 100;
+      $("#progressFill").style.width = pct + "%";
+
+      // scene-specific behavior
+      if(scene === 1){
+        startWalkingAnimation();
+        timers.push(setTimeout(() => nextScene(), 4000));
+      }
+      if(scene === 9){
+        startBurst();
+        timers.push(setTimeout(() => nextScene(), 5000));
+      }
+      if(scene === 7){
+        flyFlower();
+      }
+    }
+
+    function nextScene(){
+      if(scene < totalScenes) setScene(scene + 1);
+    }
+
+    // Buttons: next
+    $$("[data-next]").forEach(btn => btn.addEventListener("click", nextScene));
+    $("#startBtn").addEventListener("click", () => {
+      nextScene();
+      // intentar iniciar música al primer gesto del usuario
+      if(!isAudioPlaying) toggleAudio(true);
+    });
+
+    // Restart
+    $("#restartBtn").addEventListener("click", () => {
+      // reset final state
+      $("#finalContent").style.display = "none";
+      $("#chest").style.display = "block";
+      setScene(0);
+    });
+
+    // ====== Names (pills + final title) ======
+    function applyName(){
+      const up = (CONFIG.NAME || "").toUpperCase();
+      ["#namePill","#namePill2","#namePill3","#namePill4","#namePill5"].forEach(id=>{
+        const el = $(id);
+        if(el) el.textContent = up;
+      });
+      $("#finalTitle").textContent = CONFIG.FINAL_MESSAGE || "Para ti, con amor.";
+    }
+    applyName();
+
+    // ====== Audio toggle ======
+    const bgm = $("#bgm");
+    bgm.src = CONFIG.MUSIC_URL;
+    let isAudioPlaying = false;
+
+    function setAudioIcon(playing){
+      const icon = $("#audioIcon");
+      if(playing){
+        // volume
+        icon.innerHTML = '<path d="M11 5 6 9H3v6h3l5 4V5zm7.5 7a4.5 4.5 0 0 0-2.25-3.89v7.78A4.5 4.5 0 0 0 18.5 12zm0-9a1 1 0 0 0-1 1c0 .35.18.67.46.85A8.5 8.5 0 0 1 21 12a8.5 8.5 0 0 1-3.04 6.15 1 1 0 1 0 1.28 1.54A10.5 10.5 0 0 0 23 12 10.5 10.5 0 0 0 19.24 4.31.99.99 0 0 0 18.5 3z"/>';
+      } else {
+        // muted
+        icon.innerHTML = '<path d="M11 5 6 9H3v6h3l5 4V5zm10.3 4.3a1 1 0 0 0-1.4 0L18 11.2l-1.9-1.9a1 1 0 1 0-1.4 1.4l1.9 1.9-1.9 1.9a1 1 0 1 0 1.4 1.4l1.9-1.9 1.9 1.9a1 1 0 0 0 1.4-1.4L19.4 13l1.9-1.9a1 1 0 0 0 0-1.4z"/>';
+      }
+    }
+    setAudioIcon(false);
+
+    async function toggleAudio(forcePlay=false){
+      try{
+        if(forcePlay){
+          await bgm.play();
+          isAudioPlaying = true;
+          setAudioIcon(true);
+          return;
+        }
+        if(isAudioPlaying){
+          bgm.pause();
+          isAudioPlaying = false;
+          setAudioIcon(false);
+        } else {
+          await bgm.play();
+          isAudioPlaying = true;
+          setAudioIcon(true);
+        }
+      } catch (e){
+        // En iPhone a veces requiere otro gesto del usuario.
+        // No rompemos nada: solo deja el icono como estaba.
+        console.log("Audio blocked until user gesture:", e);
+      }
+    }
+    $("#audioBtn").addEventListener("click", () => toggleAudio(false));
+
+    // ====== Walking lane animation (Scene 1) ======
+    function startWalkingAnimation(){
+      const el = $("#boyWalk");
+      if(!el) return;
+      // reset
+      el.style.left = "-160px";
+      el.style.transition = "none";
+      void el.offsetWidth;
+      const lane = $("#walkLane");
+      const maxX = (lane?.clientWidth || window.innerWidth) + 160;
+      el.style.transition = "left 4s linear";
+      el.style.left = maxX + "px";
+    }
+
+    // ====== Boy approach subtle (Scene 5) ======
+    // small translate at start so it feels like entrance
+    (function(){
+      const el = $("#boyApproach");
+      if(!el) return;
+      el.style.transform = "translateX(-200px)";
+      el.style.transition = "transform 3s ease";
+      setTimeout(()=>{ el.style.transform = "translateX(0px)"; }, 50);
+    })();
+
+    // ====== Flower fly (Scene 7) ======
+    function flyFlower(){
+      const f = $("#flyFlower");
+      if(!f) return;
+      f.style.transition = "none";
+      f.style.opacity = ".2";
+      f.style.transform = "translate(-90px,-40px) scale(.35)";
+      void f.offsetWidth;
+      f.style.transition = "transform 1.5s ease, opacity 1.2s ease";
+      f.style.opacity = "1";
+      f.style.transform = "translate(120px,-100px) scale(1.1)";
+    }
+
+    // ====== Burst hearts (Scene 9) ======
+    function startBurst(){
+      const container = $("#burst");
+      if(!container) return;
+      container.innerHTML = "";
+      const count = 30;
+
+      for(let i=0;i<count;i++){
+        const h = document.createElement("div");
+        h.className = "mini-heart";
+        h.innerHTML = `
+          <svg viewBox="0 0 24 24" class="icon" style="width:100%;height:100%;">
+            <path d="M12 21s-7-4.35-9.5-8.5C.4 9.2 2 6 5.6 5.3 8 4.8 10 6.3 12 8.4c2-2.1 4-3.6 6.4-3.1C22 6 23.6 9.2 21.5 12.5 19 16.65 12 21 12 21z" fill="currentColor"/>
+          </svg>`;
+        container.appendChild(h);
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist  = 260 + Math.random() * 520;
+        const x = Math.cos(angle) * dist;
+        const y = Math.sin(angle) * dist;
+        const delay = i * 50;
+        const size = 14 + Math.random() * 22;
+        h.style.width = size + "px";
+        h.style.height = size + "px";
+        h.style.left = "0px";
+        h.style.top = "0px";
+
+        setTimeout(()=>{
+          h.style.transition = "transform 4s ease-out, opacity 4s ease-out";
+          h.style.opacity = "1";
+          // start
+          h.style.transform = "translate(0px,0px) scale(1)";
+          // next frame
+          requestAnimationFrame(()=>{
+            h.style.opacity = "0";
+            h.style.transform = `translate(${x}px, ${y}px) scale(.1)`;
+          });
+        }, delay);
+      }
+    }
+
+    // ====== Chest open (Scene 10) ======
+    $("#chest").addEventListener("click", () => {
+      // pop particles quickly
+      const chest = $("#chest");
+      chest.style.transition = "transform .2s ease, opacity .5s ease";
+      chest.style.transform = "scale(.96)";
+      setTimeout(()=> chest.style.transform = "scale(1.02)", 80);
+
+      // little burst dots
+      const dots = document.createElement("div");
+      dots.style.position = "absolute";
+      dots.style.inset = "0";
+      dots.style.display = "grid";
+      dots.style.placeItems = "center";
+      dots.style.pointerEvents = "none";
+      chest.appendChild(dots);
+
+      const dotCount = 18;
+      for(let i=0;i<dotCount;i++){
+        const d = document.createElement("div");
+        d.style.position = "absolute";
+        d.style.width = "10px";
+        d.style.height = "10px";
+        d.style.borderRadius = "999px";
+        d.style.background = "rgba(248,113,113,1)";
+        d.style.opacity = "1";
+        d.style.transform = "translate(0,0) scale(1)";
+        d.style.transition = "transform 1.8s ease-out, opacity 1.8s ease-out";
+        dots.appendChild(d);
+
+        const x = (Math.random()-0.5) * 500;
+        const y = (Math.random()-0.5) * 500;
+        setTimeout(()=>{
+          d.style.opacity = "0";
+          d.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+        }, 20);
+      }
+
+      setTimeout(()=>{
+        chest.style.opacity = "0";
+        setTimeout(()=>{
+          chest.style.display = "none";
+          $("#finalContent").style.display = "block";
+          $("#finalContent").classList.add("fade-in");
+        }, 220);
+      }, 520);
+    });
+
+    // ====== Auto transitions similar to original ======
+    // Scene 1: auto next after 4s (done in setScene)
+    // Scene 9: auto next after 5s (done in setScene)
+
+    // ====== Snow canvas (similar idea to original) ======
+    const canvas = $("#snow");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+    const mp = 100;
+
+    function resize(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      for(let i=0;i<mp;i++){
+        particles.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height,
+          r: Math.random()*4 + 1,
+          d: Math.random()*mp
+        });
+      }
+    }
+
+    function drawSnow(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.beginPath();
+      for(const p of particles){
+        ctx.moveTo(p.x, p.y);
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2, true);
+      }
+      ctx.fill();
+      updateSnow();
+      requestAnimationFrame(drawSnow);
+    }
+
+    function updateSnow(){
+      for(let i=0;i<particles.length;i++){
+        const p = particles[i];
+        p.y += Math.cos(p.d) + 1 + p.r/2;
+        p.x += 0; // calm wind
+
+        if(p.x > canvas.width + 5 || p.x < -5 || p.y > canvas.height){
+          if(i % 3 > 0){
+            particles[i] = { x: Math.random()*canvas.width, y: -10, r: p.r, d: p.d };
+          } else {
+            particles[i] = { x: Math.random()*canvas.width, y: -10, r: p.r, d: p.d };
+          }
+        }
+      }
+    }
+
+    window.addEventListener("resize", resize, {passive:true});
+    resize();
+    drawSnow();
+
+    // ====== Keyboard (desktop) ======
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "ArrowRight" || e.key === "Enter") nextScene();
+      if(e.key === "ArrowLeft") setScene(scene - 1);
+    });
+
+    // Start at scene 0
+    setScene(0);
+  </script>
+</body>
+</html>
